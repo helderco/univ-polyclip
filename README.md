@@ -23,11 +23,11 @@ Requires **PyOpenGL**. If you have pip, install is easy:
 
 Supported operations are: union, intersection and difference.
 
-Subject and clip polygon can be defined per command line option. Defaults for the subject and clip polygon are set at the beggining of the file for easy edit, but they can be overriden from the command line using the options `--subject-poly` and `--clip-poly`.
+Subject and clip polygon can be defined per command line option. Defaults for the subject and clip polygon are set at the beggining of the file for easy edit, but they can be overriden from the command line using the options `--subj-poly` and `--clip-poly`.
 
 **Example:**
 
-`polyclip.py --subject-poly="1.5,1.25;7.5,2.5;4,3;4.5,6.5"`
+`polyclip.py --subj-poly="1.5, 1.25; 7.5, 2.5; 4, 3; 4.5, 6.5"`
 
 Type `polyclip.py -h` for available options. Press `Esc` to exit.
 
