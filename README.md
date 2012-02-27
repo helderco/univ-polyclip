@@ -30,3 +30,8 @@ Subject and clip polygon can be defined per command line option. Defaults for th
 `polyclip.py --subject-poly="1.5,1.25;7.5,2.5;4,3;4.5,6.5"`
 
 Type `polyclip.py -h` for available options. Press `Esc` to exit.
+
+
+### Import
+
+It is also possible to import and use the defined functions and classes in your own script. Currently there is no documentation for what you can use from import, so you'll have to study the code for now.
