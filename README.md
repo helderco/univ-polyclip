@@ -21,7 +21,7 @@ The command line interface is provided as a demo (`PolygonClip.java`), running t
 
 Made with **JOGL 1**.
 
-Used the [NetBeans OpenGL Pack](http://kenai.com/projects/netbeans-opengl-pack/pages/Home), which at this does does **not** support [JOGL 2](http://kenai.com/projects/jogl).
+Used the [NetBeans OpenGL Pack](http://kenai.com/projects/netbeans-opengl-pack/pages/Home), which at this time does **not** support [JOGL 2](http://kenai.com/projects/jogl).
 
 ### JOGL 1 installation in Netbeans at this time
 
@@ -38,13 +38,16 @@ Provided for demonstration or testing purposes. Can't see how it could be useful
 
 Supported operations are: union, intersection and difference.
 
+
+### Polygon definitions
+
 Subject and clip polygon can be defined per command line option. Defaults for the subject and clip polygon are set at the beggining of the file for easy edit, but they can be overriden from the command line using the options `--subj-poly` and `--clip-poly`.
 
 **Example:**
 
 `java -jar polyclip.jar --subj-poly="1.5, 1.25; 7.5, 2.5; 4, 3; 4.5, 6.5"`
 
-**Options:**
+### Options
 
 Run with `-h` or `--help` for available options.
 
