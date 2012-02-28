@@ -18,19 +18,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# ########################################################################
-#
-# Created for educational purposes only.
-#
-# Based on the paper "Efficient Clipping of Arbitrary Polygons" by Günther
-# Greiner (greiner[at]informatik.uni-erlangen.de) and Kai Hormann
-# (hormann[at]informatik.tu-clausthal.de), ACM Transactions on Graphics
-# 1998;17(2):71-83.
-#
-# Available at: http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf
-#
-# You should have received the README file along with this program.
-# If not, see <https://github.com/helderco/polyclip>
+
+"""Efficient Clipping of Arbitrary Polygons using OpenGPL
+
+Based on the paper "Efficient Clipping of Arbitrary Polygons" by Günther
+Greiner (greiner[at]informatik.uni-erlangen.de) and Kai Hormann
+(hormann[at]informatik.tu-clausthal.de), ACM Transactions on Graphics
+1998;17(2):71-83.
+
+Available at: http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf
+
+You should have received the README file along with this program.
+If not, see <https://github.com/helderco/polyclip>
+"""
 
 import sys
 import OpenGL
@@ -50,27 +50,32 @@ cpoly = [(5.0, 4.5), (3.0, 5.5), (1.0, 4.0), (1.5, 3.5),
 
 
 class Vertex(object):
+    """Node in a circular doubly linked list.
+
+    This class is almost exactly as described in the paper by Günther/Greiner.
+    """
+
     def __init__(self, vertex, alpha=0.0, intersect=False, entry=True, checked=False):
         if isinstance(vertex, Vertex):
             vertex = (vertex.x, vertex.y)
             # checked = True
 
-        self.x, self.y = vertex     # point coordinates
-        self.next = None            # Vertex object
-        self.prev = None            # Vertex object
-        self.neighbour = None       # Vertex object
-        self.entry = entry          # True if entry, False if exit
-        self.alpha = alpha
-        self.intersect = intersect
-        self.checked = checked
+        self.x, self.y = vertex     # point coordinates of the vertex
+        self.next = None            # reference to the next vertex of the polygon
+        self.prev = None            # reference to the previous vertex of the polygon
+        self.neighbour = None       # reference to the corresponding intersection vertex in the other polygon
+        self.entry = entry          # True if intersection is an entry point, False if exit
+        self.alpha = alpha          # intersection point's relative distance from previous vertex
+        self.intersect = intersect  # True if vertex is an intersection
+        self.checked = checked      # True if the vertex has been checked (last phase)
 
     def isInside(self, poly):
         """Test if a vertex lies inside a polygon (odd-even rule).
-        
+
         This function calculates the "winding" number for a point, which
         represents the number of times a ray emitted from the point to
         infinity intersects any edge of the polygon.
-        
+
         An even winding number means the point lies OUTSIDE the polygon; 
         an odd number means it lies INSIDE it.
         """
@@ -88,6 +93,7 @@ class Vertex(object):
             self.neighbour.setChecked()
 
     def __repr__(self):
+        """String representation of the vertex for debugging purposes."""
         return "(%.2f, %.2f) <-> %s(%.2f, %.2f)%s <-> (%.2f, %.2f) %s" % (
             self.prev.x, self.prev.y,
             'i' if self.intersect else ' ',
@@ -99,12 +105,12 @@ class Vertex(object):
 
 
 class Polygon(object):
+    """Manages a circular doubly linked list of Vertex objects that represents a polygon."""
+
     first = None
 
     def add(self, vertex):
-        """Add a vertex object to the polygon
-        (vertex is added at the 'end' of the list").
-        """
+        """Add a vertex object to the polygon (vertex is added at the 'end' of the list")."""
         if not self.first:
             self.first = vertex
             self.first.next = vertex
@@ -119,7 +125,7 @@ class Polygon(object):
 
     def insert(self, vertex, start, end):
         """Insert and sort a vertex between a specified pair of vertices.
-        
+
         This function inserts a vertex (most likely an intersection point)
         between two other vertices (start and end). These other vertices
         cannot be intersections (that is, they must be actual vertices of
@@ -159,9 +165,7 @@ class Polygon(object):
 
     @property
     def points(self):
-        """Return the polygon's points as a list of tuples
-        (ordered coordinates pair).
-        """
+        """Return the polygon's points as a list of tuples (ordered coordinates pair)."""
         p = []
         for v in self.iter():
             p.append((v.x, v.y))
@@ -174,7 +178,6 @@ class Polygon(object):
                 return True
         return False
 
-
     def union(self, clip):
         return self.clip(clip, False, False)
 
@@ -185,8 +188,32 @@ class Polygon(object):
         return self.clip(clip, False, True)
 
     def clip(self, clip, s_entry, c_entry):
-        """Calculate the difference between two polygons (subject and clipper).
-        This is the meat and bones of the algorithm.
+        """Clip this polygon using another one as a clipper.
+
+        This is where the algorithm is executed. It allows you to make
+        a UNION, INTERSECT or DIFFERENCE operation between two polygons.
+
+        Given two polygons A, B the following operations may be performed:
+
+        A|B ... A OR B  (Union of A and B)
+        A&B ... A AND B (Intersection of A and B)
+        A\B ... A - B
+        B\A ... B - A
+
+        The entry records store the direction the algorithm should take when
+        it arrives at that entry point in an intersection. Depending on the
+        operation requested, the direction is set as follows for entry points
+        (f=forward, b=backward; exit points are always set to the opposite):
+
+              Entry
+              A   B
+              -----
+        A|B   b   b
+        A&B   f   f
+        A\B   b   f
+        B\A   f   b
+
+        f = True, b = False when stored in the entry record
         """
         # phase one - find intersections
         for s in self.iter(): # for each vertex Si of subject polygon do
@@ -252,7 +279,7 @@ class Polygon(object):
         return list
 
     def __repr__(self):
-        """String representation of the polygon for debugging."""
+        """String representation of the polygon for debugging purposes."""
         count, out = 1, "\n"
         for s in self.iter():
             out += "%02d: %s\n" % (count, str(s))
@@ -269,7 +296,7 @@ class Polygon(object):
                 return
 
     def show_points(self):
-        """Draw points in screen for debugging purposes."""
+        """Draw points in screen for debugging purposes. Depends on OpenGL."""
         glBegin(GL_POINTS)
         for s in self.iter():
             glVertex2f(s.x, s.y)
@@ -277,7 +304,12 @@ class Polygon(object):
 
 
 def intersect(s1, s2, c1, c2):
-    """Algorithm based on: http://paulbourke.net/geometry/lineline2d/"""
+    """Test the intersection between two lines (two pairs of coordinates for two points).
+
+    Return the coordinates for the intersection and the subject and clipper alphas if the test passes.
+
+    Algorithm based on: http://paulbourke.net/geometry/lineline2d/
+    """
     den = (c2.y - c1.y) * (s2.x - s1.x) - (c2.x - c1.x) * (s2.y - s1.y)
 
     if not den:
@@ -300,7 +332,7 @@ def intersect(s1, s2, c1, c2):
 
 
 def find_origin(subject, clipper):
-    """Find the center coordinate for the given points"""
+    """Find the center coordinate for the given points."""
     x, y = [], []
 
     for s in subject:
@@ -321,6 +353,7 @@ def find_origin(subject, clipper):
 
 
 def clip_polygon(subject, clipper, operation = 'difference'):
+    """Higher level function for clipping two polygons (from a list of points)."""
     Subject = Polygon()
     Clipper = Polygon()
 
@@ -339,6 +372,7 @@ def clip_polygon(subject, clipper, operation = 'difference'):
 
 def parse_polygon(input_str):
     """construct a polygon based on a string.
+
     Example input: "1.5,1.25;7.5,2.5;4,3;4.5,6.5"
     """
     try:
@@ -526,4 +560,3 @@ if __name__ == '__main__':
 
     options = Arguments(epilog="\n").parse_args(sys.argv[1:])[0]
     Graphics(options, spoly, cpoly).run(title="Polygon Clipping")
-
