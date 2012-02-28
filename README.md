@@ -13,11 +13,11 @@ To study the algorithm, inspect the file `polygon.py`. It can be imported and us
 
 ### Import
 
-'''python
+```python
 > import polygon
 > help(polygon)
 > from polygon import *
-'''
+```
 
 
 ## Command line
