@@ -9,8 +9,22 @@ Available at: <http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf>
 
 This work was created for educational purposes only, as an implementation in Python of the above algorithm, for a class in Graphical Computation.
 
+To study the algorithm, inspect the file `polygon.py`. It can be imported and used in other contexts (i.e., not OpenGL).
 
-## Requirements
+### Import
+
+'''python
+> import polygon
+> help(polygon)
+> from polygon import *
+'''
+
+
+## Command line
+
+The command line interface (`polyclip.py`) is provided for demonstration or testing purposes, using OpenGL.
+
+### Requirements
 
 Supports Python 2.5 or later.
 
@@ -20,10 +34,6 @@ Requires **PyOpenGL** (version 3 as of this writing). If you have pip, install i
 
 
 ## Usage
-
-The script can be divided in two parts. The first one is the algorithm, and the latter is it's usage with OpenGL (classes `Graphics` and `Arguments`).
-
-Besides having the code for the algorithm to be studied, a command line interface is provided for demonstration or testing purposes, for running with OpenGL.
 
 Supported operations are: union, intersection and difference.
 
@@ -38,7 +48,3 @@ Subject and clip polygon can be defined per command line option. Defaults for th
 ### Options
 
 Type `polyclip.py -h` for available options. Press `Esc` to exit.
-
-### Import
-
-It is also possible to import and use the defined functions and classes in your own script. Currently there is no documentation for what you can use from import, so you'll have to study the code for now.
