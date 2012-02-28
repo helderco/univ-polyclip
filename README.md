@@ -7,19 +7,34 @@ Available at: <http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf>
 
 ## Motivation
 
-This work was created for educational purposes only, as an implementation in Python of the above algorithm, for a class in Graphical Computation.
+This work was created for educational purposes only, as an implementation in Java of the above algorithm, for a class in Graphical Computation.
+
+
+## Files
+
+To study the algorithm, inspect file `Polygon.java`. It can be imported and used in other contexts (e.g., not opengl).
+
+The command line interface is provided as a demo (`PolygonClip.java`), running the algorithm with OpenGL. The rest of this document is about this feature.
 
 
 ## Requirements
 
-Tested on Python 2.7, not sure what minimal version is supported.
+Made with **JOGL 1**.
 
-Requires **PyOpenGL**. If you have pip, install is easy:
+Used the [NetBeans OpenGL Pack](http://kenai.com/projects/netbeans-opengl-pack/pages/Home), which at this does does **not** support [JOGL 2](http://kenai.com/projects/jogl).
 
-`pip install pyopengl`
+### JOGL 1 installation in Netbeans at this time
+
+1. Download the NetBeans OpenGL Pack from the [plugin portal](http://plugins.netbeans.org/PluginPortal/faces/PluginDetailPage.jsp?pluginid=3260) and extract the archive;
+2. Start NetBeans and open the Plugin Manager (Tools->Plugins);
+3. Enable Force install into shared directories on the Settings page;
+3. Add all modules (.nbm files) to the Downloaded plugins list and press Install;
+4. The installation wizard will guide you now for the rest of the installation.
 
 
-## Usage
+## Command line usage
+
+Provided for demonstration or testing purposes. Can't see how it could be useful to an end user.
 
 Supported operations are: union, intersection and difference.
 
@@ -27,11 +42,11 @@ Subject and clip polygon can be defined per command line option. Defaults for th
 
 **Example:**
 
-`polyclip.py --subj-poly="1.5, 1.25; 7.5, 2.5; 4, 3; 4.5, 6.5"`
+`java -jar polyclip.jar --subj-poly="1.5, 1.25; 7.5, 2.5; 4, 3; 4.5, 6.5"`
 
-Type `polyclip.py -h` for available options. Press `Esc` to exit.
+**Options:**
 
+Run with `-h` or `--help` for available options.
 
-### Import
+`java -jar polyclip.jar --help`
 
-It is also possible to import and use the defined functions and classes in your own script. Currently there is no documentation for what you can use from import, so you'll have to study the code for now.
