@@ -309,4 +309,8 @@ public class PolygonClip implements GLEventListener {
                 System.out.println(p);
         }
     }
+    
+    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged, boolean deviceChanged) {
+        // do nothing
+    }    
 }
