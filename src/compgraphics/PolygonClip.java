@@ -90,15 +90,15 @@ public class PolygonClip implements GLEventListener {
             }
             try {
                 if (option.startsWith("--subj-poly=")) {
-                    spoly = parsePolygon(option.substring(14));
+                    spoly = parsePolygon(option.split("=", 2)[1]);
                 }
                 if (option.startsWith("--clip-poly=")) {
-                    cpoly = parsePolygon(option.substring(11));
+                    cpoly = parsePolygon(option.split("=", 2)[1]);
                 }
             } catch (Exception e) {
                 System.err.format(
                     "Invalid syntax for polygon definition on option %s. " +
-                    "Using default.\n", option
+                    "Using default.\n", option.split("=")[0]
                 );
             }
         }
@@ -109,12 +109,12 @@ public class PolygonClip implements GLEventListener {
      * Semi-colons (;) separate vertices, while collons (,) separate coordinates
      */
     private float[][] parsePolygon(String values) {
-        String[] vertexes = values.substring(1, values.length()-1).split(";");
+        String[] vertexes = values.split(";");
         float[][] poly = new float[vertexes.length][2];
         for (int i = 0; i < vertexes.length; i++) {
             String[] coord = vertexes[i].split(",", 2);
-            float x = Float.parseFloat(coord[0]);
-            float y = Float.parseFloat(coord[1]);
+            float x = Float.parseFloat(coord[0].trim());
+            float y = Float.parseFloat(coord[1].trim());
             poly[i] = new float[] {x, y};
         }
         return poly;
@@ -134,7 +134,7 @@ public class PolygonClip implements GLEventListener {
         
         for (String option : Arrays.asList(args)) {
             if (option.equals("-h") || option.equals("--help")) {
-                System.out.println("Usage: java -jar " + args[0] + " [options]");
+                System.out.println("Usage: java -jar polyclip.jar [options]");
                 System.out.println();
 
                 String[][] options = {
